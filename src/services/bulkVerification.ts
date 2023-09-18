@@ -1,0 +1,74 @@
+import { Guild } from "discord.js";
+import { usersThatHaveVerifiedEthAddress } from "./userService";
+import { isEnsOwner } from "./ensService";
+
+export async function bulkVerifyEns(
+  guild: Guild,
+  warnUnverifiedEnsOwners?: boolean
+): Promise<{
+  membersWithEnsNickname: number;
+  unverifiedEnsMembersWithoutConnectedAccounts: number;
+  usersWithInValidEnsNames: number;
+}> {
+  console.log({ m: guild.members.cache });
+  const membersWithEnsNickname = guild.members.cache.filter((member) =>
+    member.nickname?.endsWith(".eth")
+  );
+  console.log({ membersWithEnsNickname });
+
+  // Find every member that has an ENS name and has connected their account
+  const usersWithConnectedAccounts = await usersThatHaveVerifiedEthAddress(
+    membersWithEnsNickname.map((member) => member.id)
+  );
+  console.log({ usersWithConnectedAccounts });
+
+  // Find every member that has an ENS name and has not connected their account
+  const userIdsWithConnectedAccounts = usersWithConnectedAccounts.map(
+    (user) => user.userID
+  );
+  const unverifiedEnsMembersWithoutConnectedAccounts =
+    membersWithEnsNickname.filter(
+      (member) => !userIdsWithConnectedAccounts.includes(member.id)
+    );
+  console.log({ unverifiedEnsMembersWithoutConnectedAccounts });
+
+  // Send a message to every member that has an ENS name and has not connected their account
+  if (warnUnverifiedEnsOwners)
+    unverifiedEnsMembersWithoutConnectedAccounts.forEach((member) => {
+      member.send(
+        "You have an ENS name set, but you have not connected your account. Please connect your account to verify your ENS name."
+      );
+    });
+
+  // Find every member that has a a connected account but does not own the ENS name that they have set
+  const userIdToEnsMap = membersWithEnsNickname.reduce(
+    (acc, user) => {
+      acc[user.id] = user.nickname as string;
+      return acc;
+    },
+    {} as {
+      [key: string]: string;
+    }
+  );
+  const usersWithInValidEnsNames = usersWithConnectedAccounts.filter((user) => {
+    const ensName = userIdToEnsMap[user.userID];
+    return !isEnsOwner(user.ethAddresses, ensName);
+  });
+  console.log({ usersWithInValidEnsNames });
+
+  // Send a message to every member that has a a connected account but does not own the ENS name that they have set
+  if (warnUnverifiedEnsOwners)
+    usersWithInValidEnsNames.forEach((user) => {
+      const member = guild.members.cache.get(user.userID);
+      member?.send(
+        `You have an ENS name set, but you do not own the ENS name that you have set. Please set an ENS name that you own or connect a different account.`
+      );
+    });
+
+  return {
+    membersWithEnsNickname: membersWithEnsNickname.size,
+    unverifiedEnsMembersWithoutConnectedAccounts:
+      unverifiedEnsMembersWithoutConnectedAccounts.size,
+    usersWithInValidEnsNames: usersWithInValidEnsNames.length,
+  };
+}
