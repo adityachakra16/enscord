@@ -1,0 +1,59 @@
+/* Set the font for the entire page */
+body {
+  font-family: "Overpass", sans-serif;
+  height: 100vh; /* Full viewport height */
+  margin: 0; /* Remove default margin */
+  display: flex; /* Set up for centering content */
+  flex-direction: column; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  background-color: #f4f4f4; /* Just giving a light background for contrast */
+  text-align: center;
+}
+
+/* Style the button */
+button {
+  background-color: #5385ff;
+  color: white; /* Text color */
+  padding: 10px 20px; /* Padding around text */
+  height: 50px /* Set height of button */;
+  width: 250px; /* Set width of button */
+  border: none; /* Remove any default borders */
+  border-radius: 30px; /* Make the button rounded */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  transition: background-color 0.3s ease; /* Smooth color transition */
+  font-size: large;
+}
+
+/* Change button color slightly on hover for interactivity */
+button:hover {
+  background-color: #406cd1;
+}
+
+#logo {
+  max-width: 250px; /* Or whatever max size you'd like */
+  margin-bottom: 20px; /* Space between the logo and the heading */
+}
+
+/* Existing styles... */
+
+/* Responsive adjustments */
+@media only screen and (max-width: 768px) {
+  body {
+    padding: 20px; /* Add some padding on smaller screens for breathing room */
+  }
+
+  #logo {
+    max-width: 120px; /* Smaller logo on mobile */
+    margin-bottom: 15px;
+  }
+
+  button {
+    padding: 8px 16px; /* Slightly smaller button on mobile */
+    font-size: 0.9em; /* Reduce the font size a bit */
+  }
+
+  h1 {
+    font-size: 1.5em; /* Reduce the font size a bit */
+  }
+}

@@ -1,5 +1,4 @@
 import { TextChannel } from "discord.js";
-import { setGuildOption } from "../functions";
 import { Command } from "../types";
 
 const command: Command = {
@@ -9,7 +8,6 @@ const command: Command = {
     if (!prefix)
       return (message.channel as TextChannel).send("No prefix provided");
     if (!message.guild) return;
-    setGuildOption(message.guild, "prefix", prefix);
     (message.channel as TextChannel).send("Prefix successfully changed!");
   },
   permissions: ["Administrator"],
