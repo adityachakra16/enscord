@@ -1,12 +1,18 @@
 import "./discord";
-
 const express = require("express");
+const path = require("path");
+
 const app = express();
+const PORT = 3001; // You can choose another port if you want
 
-const PORT = process.env.PORT || 3000;
+// Serve the static files from the React app
+app.use(express.static(path.join(__dirname, "frontend/build")));
 
-app.use(express.static("public")); // Assuming 'public' is the directory with your frontend files.
+// Handles any requests that don't match the ones above
+app.get("*", (req: any, res: any) => {
+  res.sendFile(path.join(__dirname + "/frontend/build/index.html"));
+});
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server is listening on port ${PORT}`);
 });

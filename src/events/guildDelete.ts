@@ -13,3 +13,5 @@ const event: BotEvent = {
     }
   },
 };
+
+export default event;

@@ -1,16 +1,6 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  Guild,
-  GuildMember,
-  User,
-} from "discord.js";
-import { BotEvent } from "../types";
-import UserDetails from "../schemas/UserDetails";
-import { isEnsOwner } from "../services/ensService";
-import GuildModel from "../schemas/Guild";
+import { GuildMember } from "discord.js";
 import { verifyEns } from "../services/verificationService";
+import { BotEvent } from "../types";
 
 const event: BotEvent = {
   name: "guildMemberAdd",
@@ -19,3 +9,5 @@ const event: BotEvent = {
     const verified = await verifyEns(member);
   },
 };
+
+export default event;
