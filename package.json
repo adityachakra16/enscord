@@ -13,18 +13,14 @@
   "author": "MericcaN41",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/rest": "^1.1.0",
-    "@types/node": "^18.7.14",
+    "@discordjs/rest": "^2.0.1",
     "chalk": "^4.1.2",
-    "discord.js": "14.3.0",
+    "discord.js": "^14.13.0",
     "dotenv": "^16.0.2",
     "express": "^4.18.2",
     "mongoose": "^6.5.4"
   },
   "devDependencies": {
-    "typescript": "^4.8.2"
-  },
-  "overrides": {
-    "discord-api-types": "0.37.20"
+    "typescript": "^5.2.2"
   }
 }

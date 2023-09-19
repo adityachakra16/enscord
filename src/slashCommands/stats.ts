@@ -28,23 +28,20 @@ const command: SlashCommand = {
     });
     interaction.reply({
       embeds: [
-        new EmbedBuilder()
-          .setTitle("ENS Stats")
-          .setFields([
-            {
-              name: "Members with ENS names",
-              value: membersWithEnsNickname.toString(),
-            },
-            {
-              name: "Members with ENS names that are not verified",
-              value: unverifiedEnsMembersWithoutConnectedAccounts.toString(),
-            },
-            {
-              name: "Members with ENS names that are not owned by them",
-              value: usersWithInValidEnsNames.toString(),
-            },
-          ])
-          .setColor(getThemeColor("text")),
+        new EmbedBuilder().setTitle("ENS Stats").setFields([
+          {
+            name: "Members with ENS names",
+            value: membersWithEnsNickname.toString(),
+          },
+          {
+            name: "Members with ENS names that are not verified",
+            value: unverifiedEnsMembersWithoutConnectedAccounts.toString(),
+          },
+          {
+            name: "Members with ENS names that are not owned by them",
+            value: usersWithInValidEnsNames.toString(),
+          },
+        ]),
       ],
     });
   },
