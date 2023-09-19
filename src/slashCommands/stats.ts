@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { getThemeColor } from "../functions";
 import { SlashCommand } from "../types";
-import { bulkVerifyEns } from "../services/bulkVerification";
+import { bulkVerifyEns } from "../services/verificationService";
 
 const command: SlashCommand = {
   command: new SlashCommandBuilder()
