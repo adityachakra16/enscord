@@ -5,11 +5,17 @@ import {
   PermissionFlagsBits,
   Partials,
 } from "discord.js";
-const { Guilds, MessageContent, GuildMessages, GuildMembers } =
+const { Guilds, MessageContent, GuildMessages, GuildMembers, DirectMessages } =
   GatewayIntentBits;
 const { Channel, GuildMember, User } = Partials;
 const client = new Client({
-  intents: [Guilds, MessageContent, GuildMessages, GuildMembers],
+  intents: [
+    Guilds,
+    MessageContent,
+    GuildMessages,
+    GuildMembers,
+    DirectMessages,
+  ],
   partials: [Channel, GuildMember, User],
 });
 import { Command, SlashCommand } from "./types";

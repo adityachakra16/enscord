@@ -1,17 +1,19 @@
 import { Guild } from "discord.js";
 import { usersThatHaveVerifiedEthAddress } from "./userService";
 import { isEnsOwner } from "./ensService";
+import GuildModel from "../schemas/Guild";
 
 export async function bulkVerifyEns(
   guild: Guild,
-  warnUnverifiedEnsOwners?: boolean
+  warnUnverifiedEnsOwners?: boolean,
+  blockFromPosting?: boolean
 ): Promise<{
   membersWithEnsNickname: number;
   unverifiedEnsMembersWithoutConnectedAccounts: number;
   usersWithInValidEnsNames: number;
 }> {
-  console.log({ m: guild.members.cache });
-  const membersWithEnsNickname = guild.members.cache.filter((member) =>
+  const members = await guild.members.fetch();
+  const membersWithEnsNickname = members.filter((member) =>
     member.nickname?.endsWith(".eth")
   );
   console.log({ membersWithEnsNickname });
@@ -59,11 +61,27 @@ export async function bulkVerifyEns(
   // Send a message to every member that has a a connected account but does not own the ENS name that they have set
   if (warnUnverifiedEnsOwners)
     usersWithInValidEnsNames.forEach((user) => {
-      const member = guild.members.cache.get(user.userID);
+      const member = members.get(user.userID);
       member?.send(
         `You have an ENS name set, but you do not own the ENS name that you have set. Please set an ENS name that you own or connect a different account.`
       );
     });
+
+  // Block every member (other than admins) that does not have a verified ENS from posting messages
+  if (blockFromPosting) {
+    const guildModel = await GuildModel.findOne({
+      guildID: guild.id,
+    });
+    if (!guildModel) throw new Error("Guild not found");
+    const ensUnverifiedRole = guild.roles.cache.get(
+      guildModel.ensUnverifiedRoleID
+    );
+    if (!ensUnverifiedRole) throw new Error("ENS Unverified role not found");
+    usersWithInValidEnsNames.forEach((user) => {
+      const member = members.get(user.userID);
+      member?.roles.add(ensUnverifiedRole);
+    });
+  }
 
   return {
     membersWithEnsNickname: membersWithEnsNickname.size,

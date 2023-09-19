@@ -20,7 +20,7 @@ const command: SlashCommand = {
       membersWithEnsNickname,
       unverifiedEnsMembersWithoutConnectedAccounts,
       usersWithInValidEnsNames,
-    } = await bulkVerifyEns(interaction.guild as Guild, false);
+    } = await bulkVerifyEns(interaction.guild as Guild, true, true);
     console.log({
       membersWithEnsNickname,
       unverifiedEnsMembersWithoutConnectedAccounts,
