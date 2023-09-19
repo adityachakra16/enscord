@@ -1,9 +1,9 @@
-import { Guild } from "discord.js";
+import { ChannelType, Guild } from "discord.js";
 import GuildModel from "../schemas/Guild";
 import { BotEvent } from "../types";
 import { usersThatHaveVerifiedEthAddress } from "../services/userService";
 import { isEnsOwner } from "../services/ensService";
-import { bulkVerifyEns } from "../services/bulkVerification";
+import { bulkVerifyEns } from "../services/verificationService";
 
 const event: BotEvent = {
   name: "guildCreate",
@@ -19,7 +19,17 @@ const event: BotEvent = {
     });
     const ensUnverifiedRole = await guild.roles.create({
       name: "ENS Unverified",
-      color: 0, //red
+      color: 0, //red,
+    });
+
+    // Update permissions for unverified ENS role to not be able to send messages
+    const channels = await guild.channels.fetch();
+    channels.forEach(async (channel) => {
+      if (channel?.type === ChannelType.GuildText) {
+        await channel.permissionOverwrites.create(ensUnverifiedRole, {
+          SendMessages: false,
+        });
+      }
     });
 
     try {
@@ -35,7 +45,7 @@ const event: BotEvent = {
       console.log({ err });
     }
 
-    // Find every member that has an ENS name
+    // Find every member that has an ENS name and verify them
     await bulkVerifyEns(guild, true);
   },
 };
