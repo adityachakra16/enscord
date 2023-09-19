@@ -6,6 +6,8 @@ const GuildSchema = new Schema<IGuild>({
   options: {
     prefix: { type: String, default: process.env.PREFIX },
   },
+  ensVerifiedRoleID: { type: String },
+  ensUnverifiedRoleID: { type: String },
 });
 
 const GuildModel = model("guild", GuildSchema);

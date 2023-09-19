@@ -32,6 +32,8 @@ export interface IGuild extends mongoose.Document {
   guildID: string;
   options: GuildOptions;
   joinedAt: Date;
+  ensVerifiedRoleID: string;
+  ensUnverifiedRoleID: string;
 }
 
 export interface IUserDetails extends mongoose.Document {
