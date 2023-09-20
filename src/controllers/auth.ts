@@ -3,6 +3,7 @@ import UserDetailsModel from "../schemas/UserDetails";
 import { connect as connectDiscord } from "../services/auth/discord";
 import { generateToken, verifyToken } from "../services/auth/jwt";
 import { connect as connectWallet, getNonce } from "../services/auth/wallet";
+import { verifyEnsForUserOnAllGuilds } from "../services/verificationService";
 
 const express = require("express");
 const router = express.Router();
@@ -42,7 +43,7 @@ router.post("/wallet", verifyToken, async (req: any, res: any) => {
 
   user.ethAddresses.push(ethAddress);
   await user.save();
-
+  verifyEnsForUserOnAllGuilds(user);
   res.status(200).send({
     user,
   });

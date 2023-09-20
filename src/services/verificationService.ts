@@ -9,6 +9,8 @@ import { usersThatHaveVerifiedEthAddress } from "./userService";
 import { isEnsOwner } from "./ensService";
 import GuildModel from "../schemas/Guild";
 import UserDetails from "../schemas/UserDetails";
+import { IUserDetails } from "../types";
+import { client } from "../discord";
 
 export async function verifyEns(
   member: GuildMember,
@@ -57,6 +59,22 @@ export async function verifyEns(
   }
   member.roles.remove(unverifiedEnsRole);
   return true;
+}
+
+export async function verifyEnsForUserOnAllGuilds(
+  user: IUserDetails
+): Promise<void> {
+  const guilds = await GuildModel.find();
+  const guildsToVerify = [] as GuildMember[];
+  guilds.forEach((guild) => {
+    const fullGuild = client.guilds.cache.get(guild.guildID);
+    if (!fullGuild) return false;
+    const member = fullGuild.members.cache.get(user.userID);
+    if (!member) return false;
+    if (member.nickname?.endsWith(".eth")) guildsToVerify.push(member);
+  });
+
+  guildsToVerify.forEach((member) => verifyEns(member));
 }
 
 export async function bulkVerifyEns(

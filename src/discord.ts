@@ -8,7 +8,7 @@ import {
 const { Guilds, MessageContent, GuildMessages, GuildMembers, DirectMessages } =
   GatewayIntentBits;
 const { Channel, GuildMember, User } = Partials;
-const client = new Client({
+export const client = new Client({
   intents: [
     Guilds,
     MessageContent,
