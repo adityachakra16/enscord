@@ -1,17 +1,22 @@
 import "./discord";
 const express = require("express");
 const path = require("path");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
-const PORT = 3001; // You can choose another port if you want
+const PORT = 3001;
+import auth from "./controllers/auth";
 
-// Serve the static files from the React app
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
+app.use(cors(corsOptions));
+app.use(bodyParser.json());
+
 app.use(express.static(path.join(__dirname, "frontend/build")));
-
-// Handles any requests that don't match the ones above
-app.get("*", (req: any, res: any) => {
-  res.sendFile(path.join(__dirname + "/frontend/build/index.html"));
-});
+app.use("/auth", auth);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

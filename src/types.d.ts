@@ -39,6 +39,7 @@ export interface IGuild extends mongoose.Document {
 export interface IUserDetails extends mongoose.Document {
   userID: string;
   ethAddresses: string[];
+  discordIds: string[];
   verified: boolean;
   verifiedAt: Date;
 }
