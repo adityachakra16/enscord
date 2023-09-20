@@ -1,33 +1,26 @@
-<h1 style="text-align:center;">Discord.js v14 Bot Template</h1>
+<h1 style="text-align:center;">ENS Cord</h1>
 
-## Features
+A Discord bot that protects your ENS name from impersonators.
 
-* 🟦 Typescript
-* 🔥 Slash commands (supports auto complete!)
-* ✉️ Message commands
-* 🕛 Cooldowns
-* 🏴 Detailed Permissions
-* 💪 Event & Command handlers
-* 🍃 MongoDB Support
+Today, anyone can change their Discord nickname to any ENS name and impersonate that person. This creates an attack vector where a person can easily impersonate another reputable person and send messages on a Discord server with malicious links and false announcements.
 
-## Installation, Build and Run
-1) Clone the repository then create a file named `.env` and fill it out accordingly
-```js
-TOKEN=YOURTOKENHERE
-CLIENT_ID=BOTS CLIENT ID
-PREFIX=!
-MONGO_URI=YOUR MONGO CONNECTION STRING
-MONGO_DATABASE_NAME=YOUR DATABASE NAME
-```
-2) Install typescript, To install TypeScript, you can run the following command in your terminal, This will install the latest version of TypeScript globally on your computer. (You can skip this if you already have typescript installed)
-  ```ts
-  npm install -g typescript
-  ```
-3) Compile your TypeScript code to JavaScript by running the following command:
-```js
-tsc
-```
-4) Once the build is complete it will generated a folder named `build` that contains compiled version of your ts code to js. You can run the following command in your terminal to run the project:
-```js
-npm start
-```
+A corollary effect of preventing people from impersonating ENS names is that it makes ENS names a really good way for users to signal legitimacy.
+
+## How it works
+
+1. Add the ENS Cord discord bot to a discord server
+2. Notification is sent out to everyone that has set an ENS as their display name within the server to verify their ENS
+3. Once verified, verified members get a 'Verified ENS' role.
+4. As new members join, they are asked to verify their ENS (only if they have ENS setup as their display name).
+5. Until verification is done, new members are given a role "Unverified ENS" which prevents them from posting messages on the server
+
+## Demo
+
+## Upcoming
+
+- Support for verified ENS subdomains within Discord
+- Your suggestions... (reach out to me with them)
+
+## Support
+
+Please raise an issue here for any support requests or contact me on Discord @chakra17.
