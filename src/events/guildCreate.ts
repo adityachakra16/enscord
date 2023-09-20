@@ -1,9 +1,7 @@
 import { ChannelType, Guild } from "discord.js";
 import GuildModel from "../schemas/Guild";
-import { BotEvent } from "../types";
-import { usersThatHaveVerifiedEthAddress } from "../services/userService";
-import { isEnsOwner } from "../services/ensService";
 import { bulkVerifyEns } from "../services/verificationService";
+import { BotEvent } from "../types";
 
 const event: BotEvent = {
   name: "guildCreate",

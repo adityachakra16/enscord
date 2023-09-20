@@ -10,7 +10,10 @@ import { isEnsOwner } from "./ensService";
 import GuildModel from "../schemas/Guild";
 import UserDetails from "../schemas/UserDetails";
 
-export async function verifyEns(member: GuildMember): Promise<boolean> {
+export async function verifyEns(
+  member: GuildMember,
+  sendWarning = true
+): Promise<boolean> {
   // Fetch the roles associated with ENS verification
   const guild = member.guild;
   const guildModel = await GuildModel.findOne({
@@ -35,17 +38,18 @@ export async function verifyEns(member: GuildMember): Promise<boolean> {
       !userDetails?.ethAddresses?.length ||
       !isEnsOwner(userDetails.ethAddresses, member.nickname)
     ) {
-      await member.send({
-        content: `Your display name is ${member.nickname} in ${guild.name} server, but you have not verified your ENS Name. Please verify your ENS name to send messages or change your server nickname.`,
-        components: [
-          new ActionRowBuilder<ButtonBuilder>().setComponents([
-            new ButtonBuilder()
-              .setLabel("Verify ENS Name")
-              .setStyle(ButtonStyle.Link)
-              .setURL("http://localhost:3000/verify"),
-          ]),
-        ],
-      });
+      if (sendWarning)
+        await member.send({
+          content: `Your display name is ${member.nickname} in ${guild.name} server, but you have not verified your ENS Name. Please verify your ENS name to send messages or change your server nickname.`,
+          components: [
+            new ActionRowBuilder<ButtonBuilder>().setComponents([
+              new ButtonBuilder()
+                .setLabel("Verify ENS Name")
+                .setStyle(ButtonStyle.Link)
+                .setURL("http://localhost:3000/verify"),
+            ]),
+          ],
+        });
       await member.roles.add(unverifiedEnsRole);
       return false;
     }
