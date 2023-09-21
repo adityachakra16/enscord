@@ -18,10 +18,10 @@ export async function verifyEns(
 ): Promise<boolean> {
   // Fetch the roles associated with ENS verification
   const guild = member.guild;
-  console.log({ member });
   const guildModel = await GuildModel.findOne({
     guildID: guild.id,
   });
+  if (!guildModel) throw new Error("Guild not found");
   console.log({ guildModel });
   const unverifiedEnsRoleId = guildModel?.ensUnverifiedRoleID;
   if (!unverifiedEnsRoleId) throw new Error("Unverified ENS role not found");
@@ -37,6 +37,10 @@ export async function verifyEns(
 
     const userDetails = await UserDetails.findOne({
       where: { userId: member.id },
+    });
+    console.log({
+      userDetails,
+      nick: member.nickname,
     });
     if (
       !userDetails?.ethAddresses?.length ||
@@ -56,13 +60,16 @@ export async function verifyEns(
           ],
         });
       console.log("adding role");
-      await member.roles.add(unverifiedEnsRole);
+      member.roles.remove(verifiedEnsRole);
+      member.roles.add(unverifiedEnsRole);
       return false;
+    } else {
+      member.roles.add(verifiedEnsRole);
+      member.roles.remove(unverifiedEnsRole);
     }
-    member.roles.add(verifiedEnsRole);
   }
   console.log("removing role");
-
+  member.roles.remove(verifiedEnsRole);
   member.roles.remove(unverifiedEnsRole);
   return true;
 }
@@ -70,17 +77,26 @@ export async function verifyEns(
 export async function verifyEnsForUserOnAllGuilds(
   user: IUserDetails
 ): Promise<void> {
+  console.log({ verifyEnsForUserOnAllGuilds });
   const guilds = await GuildModel.find();
   const guildsToVerify = [] as GuildMember[];
-  guilds.forEach((guild) => {
-    const fullGuild = client.guilds.cache.get(guild.guildID);
-    if (!fullGuild) return false;
-    const member = fullGuild.members.cache.get(user.userID);
-    if (!member) return false;
-    if (member.nickname?.endsWith(".eth")) guildsToVerify.push(member);
-  });
 
-  guildsToVerify.forEach((member) => verifyEns(member));
+  for (const guild of guilds) {
+    const fullGuild = client.guilds.cache.get(guild.guildID);
+    if (!fullGuild) continue;
+    const members = await fullGuild.members.fetch();
+    const member = members.get(user.userID);
+    console.log({ member });
+    if (!member) continue;
+    if (member.nickname?.endsWith(".eth")) guildsToVerify.push(member);
+  }
+
+  console.log({ gl: guildsToVerify.length });
+
+  const guildsToVerifyPromises = guildsToVerify.map((member) =>
+    verifyEns(member, false)
+  );
+  await Promise.all(guildsToVerifyPromises);
 }
 
 export async function bulkVerifyEns(

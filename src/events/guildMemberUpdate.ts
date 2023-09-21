@@ -7,7 +7,12 @@ const event: BotEvent = {
   execute: async (oldMember: GuildMember, newMember: GuildMember) => {
     console.log("guildMemberUpdate");
 
-    if (newMember.nickname?.endsWith(".eth")) await verifyEns(newMember);
+    try {
+      if (oldMember.nickname === newMember.nickname) return;
+      await verifyEns(newMember);
+    } catch (err) {
+      console.log({ err });
+    }
   },
 };
 

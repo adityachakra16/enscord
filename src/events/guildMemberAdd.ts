@@ -6,7 +6,11 @@ const event: BotEvent = {
   name: "guildMemberAdd",
   execute: async (member: GuildMember) => {
     console.log("guildMemberAdd");
-    if (member.nickname?.endsWith(".eth")) await verifyEns(member);
+    try {
+      await verifyEns(member);
+    } catch (err) {
+      console.log({ err });
+    }
   },
 };
 
