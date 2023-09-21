@@ -1,4 +1,4 @@
-import { ChannelType, Guild } from "discord.js";
+import { ChannelType, Guild, Role } from "discord.js";
 import GuildModel from "../schemas/Guild";
 import { bulkVerifyEns } from "../services/verificationService";
 import { BotEvent } from "../types";
@@ -6,31 +6,41 @@ import { BotEvent } from "../types";
 const event: BotEvent = {
   name: "guildCreate",
   execute: async (guild: Guild) => {
-    console.log("guildCreate");
-
     console.log(`Joined ${guild.name}`);
 
-    // Create ENS related roles
-    const ensVerifiedRole = await guild.roles.create({
-      name: "ENS Verified",
-      color: 1, //green
-    });
-    const ensUnverifiedRole = await guild.roles.create({
-      name: "ENS Unverified",
-      color: 0, //red,
-    });
-
-    // Update permissions for unverified ENS role to not be able to send messages
-    const channels = await guild.channels.fetch();
-    channels.forEach(async (channel) => {
-      if (channel?.type === ChannelType.GuildText) {
-        await channel.permissionOverwrites.create(ensUnverifiedRole, {
-          SendMessages: false,
-        });
-      }
-    });
-
     try {
+      const guildExists = await GuildModel.exists({ guildID: guild.id });
+      if (guildExists) throw new Error("Guild already exists");
+
+      let ensVerifiedRole = guild.roles.cache.find(
+        (role) => role.name === "ENS Verified"
+      );
+      let ensUnverifiedRole = guild.roles.cache.find(
+        (role) => role.name === "ENS Unverified"
+      );
+
+      // Create ENS related roles
+      if (!ensVerifiedRole)
+        ensVerifiedRole = await guild.roles.create({
+          name: "ENS Verified",
+          color: 1, //green
+        });
+
+      if (!ensUnverifiedRole)
+        ensUnverifiedRole = await guild.roles.create({
+          name: "ENS Unverified",
+          color: 0, //red,
+        });
+      console.log({ ensVerifiedRole, ensUnverifiedRole });
+      // Update permissions for unverified ENS role to not be able to send messages
+      const channels = await guild.channels.fetch();
+      channels.forEach(async (channel) => {
+        if (channel?.type === ChannelType.GuildText) {
+          await channel.permissionOverwrites.create(ensUnverifiedRole as Role, {
+            SendMessages: false,
+          });
+        }
+      });
       let newGuild = new GuildModel({
         guildID: guild.id,
         options: {},

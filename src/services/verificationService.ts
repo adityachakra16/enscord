@@ -18,9 +18,11 @@ export async function verifyEns(
 ): Promise<boolean> {
   // Fetch the roles associated with ENS verification
   const guild = member.guild;
+  console.log({ member });
   const guildModel = await GuildModel.findOne({
-    where: { guildID: guild.id },
+    guildID: guild.id,
   });
+  console.log({ guildModel });
   const unverifiedEnsRoleId = guildModel?.ensUnverifiedRoleID;
   if (!unverifiedEnsRoleId) throw new Error("Unverified ENS role not found");
   const unverifiedEnsRole = guild.roles.cache.get(unverifiedEnsRoleId);
@@ -38,8 +40,9 @@ export async function verifyEns(
     });
     if (
       !userDetails?.ethAddresses?.length ||
-      !isEnsOwner(userDetails.ethAddresses, member.nickname)
+      !(await isEnsOwner(userDetails.ethAddresses, member.nickname))
     ) {
+      console.log("not verified");
       if (sendWarning)
         await member.send({
           content: `Your display name is ${member.nickname} in ${guild.name} server, but you have not verified your ENS Name. Please verify your ENS name to send messages or change your server nickname.`,
@@ -48,15 +51,18 @@ export async function verifyEns(
               new ButtonBuilder()
                 .setLabel("Verify ENS Name")
                 .setStyle(ButtonStyle.Link)
-                .setURL("http://localhost:3000/verify"),
+                .setURL(`${process.env.DISCORD_REDIRECT_URI}/verify`),
             ]),
           ],
         });
+      console.log("adding role");
       await member.roles.add(unverifiedEnsRole);
       return false;
     }
     member.roles.add(verifiedEnsRole);
   }
+  console.log("removing role");
+
   member.roles.remove(unverifiedEnsRole);
   return true;
 }
