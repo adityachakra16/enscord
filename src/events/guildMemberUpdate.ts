@@ -6,7 +6,8 @@ const event: BotEvent = {
   name: "guildMemberUpdate",
   execute: async (oldMember: GuildMember, newMember: GuildMember) => {
     console.log("guildMemberUpdate");
-    const verified = await verifyEns(newMember);
+
+    if (newMember.nickname?.endsWith(".eth")) await verifyEns(newMember);
   },
 };
 

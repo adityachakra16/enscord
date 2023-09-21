@@ -43,8 +43,8 @@ const event: BotEvent = {
       console.log({ err });
     }
 
-    // Find every member that has an ENS name and verify them
-    await bulkVerifyEns(guild, true);
+    // // Find every member that has an ENS name and verify them
+    // await bulkVerifyEns(guild, true);
   },
 };
 
