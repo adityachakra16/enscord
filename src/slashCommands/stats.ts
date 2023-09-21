@@ -12,6 +12,7 @@ import { bulkVerifyEns } from "../services/verificationService";
 const command: SlashCommand = {
   command: new SlashCommandBuilder()
     .setName("stats")
+    .setDMPermission(false)
     .setDescription(
       "Shows the number of verified ens names and the number of ens names that are not verified"
     ),

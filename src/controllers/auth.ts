@@ -40,10 +40,11 @@ router.post("/wallet", verifyToken, async (req: any, res: any) => {
       message: "User not found",
     });
   }
-
-  user.ethAddresses.push(ethAddress);
+  if (!user.ethAddresses) user.ethAddresses = [];
+  if (!user.ethAddresses.includes(ethAddress))
+    user.ethAddresses.push(ethAddress);
   await user.save();
-  verifyEnsForUserOnAllGuilds(user);
+  await verifyEnsForUserOnAllGuilds(user);
   res.status(200).send({
     user,
   });
