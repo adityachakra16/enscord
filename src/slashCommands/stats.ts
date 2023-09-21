@@ -16,17 +16,21 @@ const command: SlashCommand = {
       "Shows the number of verified ens names and the number of ens names that are not verified"
     ),
   execute: async (interaction) => {
+    console.log("stats");
+    await interaction.reply({
+      content: "Calculating stats...",
+    });
     const {
       membersWithEnsNickname,
       unverifiedEnsMembersWithoutConnectedAccounts,
       usersWithInValidEnsNames,
-    } = await bulkVerifyEns(interaction.guild as Guild, true, true);
+    } = await bulkVerifyEns(interaction.guild as Guild, false, false);
     console.log({
       membersWithEnsNickname,
       unverifiedEnsMembersWithoutConnectedAccounts,
       usersWithInValidEnsNames,
     });
-    interaction.reply({
+    await interaction.followUp({
       embeds: [
         new EmbedBuilder().setTitle("ENS Stats").setFields([
           {
@@ -34,12 +38,19 @@ const command: SlashCommand = {
             value: membersWithEnsNickname.toString(),
           },
           {
-            name: "Members with ENS names that are not verified",
-            value: unverifiedEnsMembersWithoutConnectedAccounts.toString(),
+            name: "Members with ENS names that are verified",
+            value: (
+              membersWithEnsNickname -
+              unverifiedEnsMembersWithoutConnectedAccounts -
+              usersWithInValidEnsNames
+            ).toString(),
           },
           {
-            name: "Members with ENS names that are not owned by them",
-            value: usersWithInValidEnsNames.toString(),
+            name: "Members with ENS names that are not verified",
+            value: (
+              unverifiedEnsMembersWithoutConnectedAccounts +
+              usersWithInValidEnsNames
+            ).toString(),
           },
         ]),
       ],

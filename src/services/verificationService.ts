@@ -134,10 +134,20 @@ export async function bulkVerifyEns(
       [key: string]: string;
     }
   );
-  const usersWithInValidEnsNames = usersWithConnectedAccounts.filter((user) => {
-    const ensName = userIdToEnsMap[user.userID];
-    return !isEnsOwner(user.ethAddresses, ensName);
-  });
+
+  const ensOwnerChecks = await Promise.all(
+    usersWithConnectedAccounts.map(async (user) => {
+      const ensName = userIdToEnsMap[user.userID];
+      console.log({ user });
+      return isEnsOwner(user.ethAddresses, ensName);
+    })
+  );
+
+  // Filter users based on the results of the async function
+  const usersWithInValidEnsNames = usersWithConnectedAccounts.filter(
+    (user, index) => !ensOwnerChecks[index]
+  );
+
   console.log({ usersWithInValidEnsNames });
 
   // Send a message to every member that has a a connected account but does not own the ENS name that they have set
