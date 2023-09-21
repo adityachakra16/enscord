@@ -45,13 +45,9 @@ export default function Connect() {
                 );
               }
               return (
-                <button
-                  onClick={() => {
-                    openAccountModal();
-                  }}
-                >
-                  <b>{account.address}</b>
-                </button>
+                <div>
+                  <b>Connected Address:</b> {account.address}
+                </div>
               );
             })()}
           </div>

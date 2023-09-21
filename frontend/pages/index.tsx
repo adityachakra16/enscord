@@ -11,7 +11,7 @@ export default function Home() {
         A Discord bot that protects your ENS name from impersonators
       </div>
       <a
-        href="https://discord.com/api/oauth2/authorize?client_id=1152847163550867466&permissions=469764096&scope=bot"
+        href={`https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID}&permissions=2617248784&scope=bot`}
         target="_blank"
         rel="noopener noreferrer"
       >
