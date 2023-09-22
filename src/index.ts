@@ -8,14 +8,15 @@ const app = express();
 const PORT = 3001;
 import auth from "./controllers/auth";
 
-console.log(process.env.DISCORD_REDIRECT_URI);
 const corsOptions = {
-  origin: true,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  origin: process.env.DISCORD_REDIRECT_URI,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+
 app.use(express.static(path.join(__dirname, "frontend/build")));
 app.use("/auth", auth);
 

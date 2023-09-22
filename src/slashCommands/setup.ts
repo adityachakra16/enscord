@@ -34,43 +34,46 @@ const command: SlashCommand = {
     interaction.reply({
       content: "Setting up ENS Cord...",
     });
+    try {
+      const {
+        membersWithEnsNickname,
+        unverifiedEnsMembersWithoutConnectedAccounts,
+        usersWithInValidEnsNames,
+      } = await bulkVerifyEns(
+        interaction.guild as Guild,
+        interaction.options.getBoolean("notify") as boolean,
+        interaction.options.getBoolean("max-protection") as boolean
+      );
 
-    const {
-      membersWithEnsNickname,
-      unverifiedEnsMembersWithoutConnectedAccounts,
-      usersWithInValidEnsNames,
-    } = await bulkVerifyEns(
-      interaction.guild as Guild,
-      interaction.options.getBoolean("notify") as boolean,
-      interaction.options.getBoolean("max-protection") as boolean
-    );
-
-    await interaction.followUp({
-      content: "Setup Completed. Here are the current stats:",
-      embeds: [
-        new EmbedBuilder().setTitle("ENS Stats").setFields([
-          {
-            name: "Members with ENS names",
-            value: membersWithEnsNickname.toString(),
-          },
-          {
-            name: "Members with ENS names that are verified",
-            value: (
-              membersWithEnsNickname -
-              unverifiedEnsMembersWithoutConnectedAccounts -
-              usersWithInValidEnsNames
-            ).toString(),
-          },
-          {
-            name: "Members with ENS names that are not verified",
-            value: (
-              unverifiedEnsMembersWithoutConnectedAccounts +
-              usersWithInValidEnsNames
-            ).toString(),
-          },
-        ]),
-      ],
-    });
+      await interaction.followUp({
+        content: "Setup Completed. Here are the current stats:",
+        embeds: [
+          new EmbedBuilder().setTitle("ENS Stats").setFields([
+            {
+              name: "Members with ENS names",
+              value: membersWithEnsNickname.toString(),
+            },
+            {
+              name: "Members with ENS names that are verified",
+              value: (
+                membersWithEnsNickname -
+                unverifiedEnsMembersWithoutConnectedAccounts -
+                usersWithInValidEnsNames
+              ).toString(),
+            },
+            {
+              name: "Members with ENS names that are not verified",
+              value: (
+                unverifiedEnsMembersWithoutConnectedAccounts +
+                usersWithInValidEnsNames
+              ).toString(),
+            },
+          ]),
+        ],
+      });
+    } catch (err) {
+      console.log({ err });
+    }
   },
   cooldown: 10,
 };
