@@ -28,6 +28,10 @@ export default function Home() {
         >
           How it works
         </a>
+        <div className="text-sm text-gray-500">
+          ENS Cord is still in alpha and may contain bugs. Please reach out to
+          @chakra17 on Discord if you plan to add it to your server.
+        </div>
       </div>
       <a
         href="https://github.com/adityachakra16/enscord"
