@@ -9,7 +9,7 @@ const PORT = 3001;
 import auth from "./controllers/auth";
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: process.env.DISCORD_REDIRECT_URI,
   credentials: true,
 };
 app.use(cors(corsOptions));
