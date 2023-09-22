@@ -64,8 +64,9 @@ export async function verifyEns(
       member.roles.add(unverifiedEnsRole);
       return false;
     } else {
-      member.roles.add(verifiedEnsRole);
       member.roles.remove(unverifiedEnsRole);
+      member.roles.add(verifiedEnsRole);
+      return true;
     }
   }
   console.log("removing role");

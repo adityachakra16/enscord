@@ -31,7 +31,7 @@ const command: SlashCommand = {
         .setRequired(true)
     ),
   execute: async (interaction) => {
-    interaction.reply({
+    await interaction.reply({
       content: "Setting up ENS Cord...",
     });
     try {
