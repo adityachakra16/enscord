@@ -17,6 +17,8 @@ A corollary effect of preventing people from impersonating ENS names is that it 
 
 ## Demo
 
+Here's a [demo](https://youtu.be/BkTQFTmXkY4) of how it works.
+
 ## Upcoming
 
 - Support for verified ENS subdomains within Discord
