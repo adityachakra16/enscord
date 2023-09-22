@@ -32,7 +32,13 @@ export default function Verify() {
         <a
           href="#"
           onClick={() => {
-            const url = `https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID}&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2FlinkDiscord&response_type=code&scope=guilds%20identify`;
+            const url = `https://discord.com/api/oauth2/authorize?client_id=${
+              process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID
+            }&redirect_uri=${
+              process.env.NODE_ENV === "development"
+                ? "http%3A%2F%2Flocalhost%3A3000%2FlinkDiscord"
+                : "https%3A%2F%2Fenscord.xyz%2FlinkDiscord"
+            }&response_type=code&scope=guilds%20identify`;
             window.open(url, "popup", "width=600,height=600");
           }}
         >
